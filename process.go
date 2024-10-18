@@ -1,7 +1,15 @@
 package main
 
+import (
+	"log"
+)
+
 func (a *Ay) AtualizarTagsUnicas(tagsUnicas int) {
-	a.db.Exec(`UPDATE equipamento SET tags_unicas = ? WHERE id = 1`, tagsUnicas)
+	_, err := a.db.Exec(`UPDATE equipamento SET tags_unicas = ? WHERE id = 1`, tagsUnicas)
+
+	if err != nil {
+		log.Println("(AtualizarTagsUnicas)", err)
+	}
 }
 
 func (a *Ay) Process() {
