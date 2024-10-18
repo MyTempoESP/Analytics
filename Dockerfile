@@ -16,7 +16,7 @@ RUN go mod tidy
 COPY . .
 
 # Build the Go application
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o Envio
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o Analytics
 
 # Use a smaller base image for the final container
 #FROM debian:buster-slim
@@ -28,7 +28,7 @@ FROM alpine:3.14
 # RUN apk --no-cache add ca-certificates
 
 # Copy the compiled binary from the builder stage
-COPY --from=builder /app/Envio /usr/local/bin/Analytics
+COPY --from=builder /app/Analytics /usr/local/bin/Analytics
 
 # Command to run the executable
 CMD ["/usr/local/bin/Analytics"]
