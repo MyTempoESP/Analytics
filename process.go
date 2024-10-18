@@ -4,6 +4,10 @@ import (
 	"log"
 )
 
+func (a *Ay) AtualizarTagsUnicas(tagsUnicas int) {
+	a.db.Exec(`UPDATE equipamento SET tags_unicas = ? WHERE id = 1`, tagsUnicas)
+}
+
 func (a *Ay) Process() {
 
 	tagSet := NewIntSet()
@@ -12,13 +16,16 @@ func (a *Ay) Process() {
 
 		if t.Antena == 0 {
 			/*
-				Antena 0 não existe
+				Antena 0 não exist
 			*/
 
 			continue
 		}
 
-		tagSet.Insert(t.Epc)
-		log.Println(tagSet.Count)
+		if tagSet.Insert(t.Epc) {
+			a.AtualizarTagsUnicas(tagSet.Count)
+		}
+
+		//log.Println(tagSet.Count)
 	}
 }
