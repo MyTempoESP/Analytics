@@ -27,6 +27,7 @@ func (a *Ay) Process() {
 		}
 
 		if tagSet.Insert(t.Epc) {
+
 			a.AtualizarTagsUnicas(tagSet.Count)
 		}
 
