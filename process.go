@@ -100,6 +100,7 @@ func (a *Ay) Process() {
 				true  => prosseguir
 				false => resetar
 			*/
+			log.Println("Atualizando tags")
 			if !a.AtualizarTags(atomic.LoadInt64(&tags)) {
 				tagSet.Clear()
 				atomic.StoreInt64(&tags, 0)
