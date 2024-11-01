@@ -45,16 +45,17 @@ func (a *Ay) AtualizarTags(tags int64) (ok bool) {
 
 	if totalAnterior == 0 {
 
-		_, err = a.db.Exec(`REPLACE INTO stats (tags_total) VALUES (1) WHERE id = 1`)
+		_, err = a.db.Exec(`REPLACE INTO stats (id, tags_total, tags_unicas) VALUES (1, 1, 0)`)
 
 		ok = false
 
 		return
 	}
 
-	_, err = a.db.Exec(`REPLACE INTO stats (tags_total) VALUES (?) WHERE id = 1`, tags)
+	_, err = a.db.Exec(`REPLACE INTO stats (id, tags_total, tags_unicas) VALUES (1, ?, 0)`, tags)
 
 	if err != nil {
+
 		log.Println("(AtualizarTags)", err)
 	}
 
