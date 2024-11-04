@@ -6,11 +6,52 @@ import (
 	"time"
 )
 
+const (
+	QUERY_ATUALIZAR_TAGS_TOTAL = `
+	INSERT INTO stats (
+	    id,
+	    tags_total
+	)
+	VALUES(
+		1,
+		0
+	)
+	ON DUPLICATE KEY
+	UPDATE
+		tags_total = ?
+	`
+
+	QUERY_ATUALIZAR_TAGS_UNICAS = `
+	INSERT INTO stats (
+	    id,
+	    tags_unicas
+	)
+	VALUES(
+		1,
+		0
+	)
+	ON DUPLICATE KEY
+	UPDATE
+		tags_unicas = ?
+	`
+)
+
 func (a *Ay) AtualizarTagsUnicas(tagsUnicas int64) {
-	_, err := a.db.Exec(`UPDATE equipamento SET tags_unicas = ? WHERE id = 1`, tagsUnicas)
+
+	_, err := a.db.Exec(QUERY_ATUALIZAR_TAGS_UNICAS, tagsUnicas)
 
 	if err != nil {
 		log.Println("(AtualizarTagsUnicas)", err)
+	}
+}
+
+func (a *Ay) AtualizarTagsTotal(tags int64) {
+
+	_, err := a.db.Exec(QUERY_ATUALIZAR_TAGS_TOTAL, tags)
+
+	if err != nil {
+
+		log.Println("(AtualizarTags)", err)
 	}
 }
 
@@ -19,6 +60,11 @@ func (a *Ay) AtualizarTags(tags int64) (ok bool) {
 	var totalAnterior int64 = 0
 
 	ok = true
+
+	if tags <= 0 {
+
+		return
+	}
 
 	res, err := a.db.Query("SELECT tags_total FROM stats")
 
@@ -45,19 +91,14 @@ func (a *Ay) AtualizarTags(tags int64) (ok bool) {
 
 	if totalAnterior == 0 {
 
-		_, err = a.db.Exec(`REPLACE INTO stats (id, tags_total, tags_unicas) VALUES (1, 1, 0)`)
+		a.AtualizarTagsTotal(1)
 
 		ok = false
 
 		return
 	}
 
-	_, err = a.db.Exec(`REPLACE INTO stats (id, tags_total, tags_unicas) VALUES (1, ?, 0)`, tags)
-
-	if err != nil {
-
-		log.Println("(AtualizarTags)", err)
-	}
+	a.AtualizarTagsTotal(tags)
 
 	return
 }
@@ -102,6 +143,7 @@ func (a *Ay) Process() {
 				false => resetar
 			*/
 			log.Println("Atualizando tags")
+
 			if !a.AtualizarTags(atomic.LoadInt64(&tags)) {
 				tagSet.Clear()
 				atomic.StoreInt64(&tags, 0)
