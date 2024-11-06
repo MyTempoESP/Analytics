@@ -10,10 +10,12 @@ const (
 	QUERY_ATUALIZAR_TAGS_TOTAL = `
 	INSERT INTO stats (
 	    id,
-	    tags_total
+	    tags_total,
+	    tags_unicas
 	)
 	VALUES(
 		1,
+		0,
 		0
 	)
 	ON DUPLICATE KEY
@@ -24,10 +26,12 @@ const (
 	QUERY_ATUALIZAR_TAGS_UNICAS = `
 	INSERT INTO stats (
 	    id,
-	    tags_unicas
+	    tags_unicas,
+	    tags_total
 	)
 	VALUES(
 		1,
+		0,
 		0
 	)
 	ON DUPLICATE KEY
