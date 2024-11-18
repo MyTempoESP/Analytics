@@ -137,7 +137,7 @@ func (a *Ay) Process() {
 
 	go func() {
 
-		atualizaContagem := time.NewTicker(500 * time.Millisecond)
+		atualizaContagem := time.NewTicker(2 * time.Second)
 
 		for {
 			<-atualizaContagem.C
