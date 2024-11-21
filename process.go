@@ -169,7 +169,7 @@ func (a *Ay) Process() {
 				continue
 			}
 
-			atomic.AddInt64(&antennas[t.Antena%4], 1)
+			atomic.AddInt64(&antennas[(t.Antena-1)%4], 1)
 
 			atomic.AddInt64(&tags, 1)
 
