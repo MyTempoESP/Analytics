@@ -227,7 +227,7 @@ func (a *Ay) Process() {
 		defer ino.Close()
 
 		for {
-			ino.Send("-------")
+			ino.Send("-------\n")
 			ino.Send(fmt.Sprintf("Tags: %d\n", atomic.LoadInt64(&tags)))
 			ino.Send(fmt.Sprintf("Unicas: %d\n", tagSet.Count()))
 			ino.Send("OK\n")
