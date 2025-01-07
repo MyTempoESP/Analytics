@@ -1,9 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"sync/atomic"
 	"time"
+
+	"github.com/MyTempoESP/dial"
 )
 
 const (
@@ -159,6 +162,7 @@ func (a *Ay) Process() {
 	tagSet := NewIntSet()
 
 	go func() {
+
 		for t := range a.Tags {
 
 			if t.Antena == 0 {
@@ -177,8 +181,6 @@ func (a *Ay) Process() {
 
 				a.AtualizarTagsUnicas(tagSet.Count())
 			}
-
-			//log.Println(tagSet.Count)
 		}
 	}()
 
@@ -208,6 +210,27 @@ func (a *Ay) Process() {
 			}
 
 			a.AtualizarAntenas(&antennas)
+		}
+	}()
+
+	go func() {
+
+		ino, err := dial.NewArduino()
+
+		if err != nil {
+
+			log.Printf("Erro ao iniciar a comunicação com o arduino: %v\n", err)
+
+			return
+		}
+
+		defer ino.Close()
+
+		for {
+			ino.Send("-------")
+			ino.Send(fmt.Sprintf("Tags: %d\n", atomic.LoadInt64(&tags)))
+			ino.Send(fmt.Sprintf("Unicas: %d\n", tagSet.Count()))
+			ino.Send("OK\n")
 		}
 	}()
 
