@@ -3,7 +3,7 @@ module envio
 go 1.22.3
 
 require (
-	github.com/MyTempoESP/dial v0.0.0-20250107154227-5272d4cff8ec
+	github.com/MyTempoESP/dial v0.0.0-20250107181736-54d60af78281
 	github.com/mytempoesp/mysql-easy v0.0.0-20240823115633-cdc22aab30a4
 	github.com/mytempoesp/rabbit v0.0.1-alpha.0.20240912131652-58dc17b9d7de
 	github.com/rabbitmq/amqp091-go v1.10.0
