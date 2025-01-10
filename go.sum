@@ -4,6 +4,8 @@ github.com/MyTempoESP/serial v0.0.0-20180830185346-98f6abe2eb07 h1:TLZ2LtndxFdoX
 github.com/MyTempoESP/serial v0.0.0-20180830185346-98f6abe2eb07/go.mod h1:AMD66h4XcM+rqoOGBeQP6eb2VKZSgts9nOme51AaHjM=
 github.com/MyTempoesp/flick v0.0.0-20250110185838-d70b89790b1b h1:pgIazFTSMTu/6rbLcbMwA86yTmHSgeZB+6yedLk9hOI=
 github.com/MyTempoesp/flick v0.0.0-20250110185838-d70b89790b1b/go.mod h1:v9pVctEr7nlr5PNAsQ9N3jqhupTx5dKmgalUmz78PuQ=
+github.com/MyTempoesp/flick v0.0.0-20250110232321-75b5389c9524 h1:y8AQ0hCsE2bvQyY6IypzhdtPcSkQ79EeuO7DCoILSIw=
+github.com/MyTempoesp/flick v0.0.0-20250110232321-75b5389c9524/go.mod h1:v9pVctEr7nlr5PNAsQ9N3jqhupTx5dKmgalUmz78PuQ=
 github.com/cenkalti/backoff v2.2.1+incompatible h1:tNowT99t7UNflLxfYYSlKYsBpXdEet03Pg2g16Swow4=
 github.com/cenkalti/backoff v2.2.1+incompatible/go.mod h1:90ReRw6GdpyfrHakVjL/QHaoyV4aDUVVkXQJJJ3NXXM=
 github.com/go-sql-driver/mysql v1.8.1 h1:LedoTUt/eveggdHS9qUFC1EFSa8bU2+1pZjSRpvNJ1Y=

@@ -60,7 +60,7 @@ func (display *SerialDisplay) Start() (info chan<- DisplayInfo) {
 				display.ScreenAddr(data)
 			}
 
-			display.Screen = display.forth.Query("6 IN 1 =")
+			fmt.Println(display.forth.Query("6 IN 1 = ."))
 
 			time.Sleep(500 * time.Millisecond)
 		}
