@@ -1,12 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"sync/atomic"
 	"time"
-
-	"github.com/MyTempoesp/flick"
 )
 
 const (
@@ -213,42 +210,36 @@ func (a *Ay) Process() {
 		}
 	}()
 
+	disp, err := NewSerialDisplay()
+
+	/* > Monitoring can be skipped if NewSerialDisplay() errors out, disabling the routine in Line 221 */
+	if err != nil {
+
+		goto skip_monitoring
+	}
+
 	go func() {
-
-		forth, err := flick.NewSerialForth()
-
-		if err != nil {
-
-			log.Printf("Erro ao iniciar a comunicação com o arduino: %v\n", err)
-
-			return
-		}
-
-		defer forth.Close()
-
-
-        	forth.Run(": DRW 0 m $ d a ;")
-        	forth.Run(fmt.Sprintf(": SCX 3 FOR I DRW NXT 0 DRW ;"))
-
-		nome_equip := "PORTAL   701"
-		comm_verif := "COMUNICANDO WEB"
+		info := disp.Start()
 
 		for {
-			tags_unica := fmt.Sprintf("UNICAS   %d", tagSet.Count())
-			tags_total := fmt.Sprintf("REGIST.  %d", atomic.LoadInt64(&tags))
+			d := DisplayInfo{}
 
-			forth.Run(
-			    fmt.Sprintf("%s %s %s %s SCX",
-				forth.GetBytes(nome_equip),
-				forth.GetBytes(tags_unica),
-				forth.GetBytes(tags_total),
-				forth.GetBytes(comm_verif),
-			    ),
-			)
+			d.comm_verif = "COMUNICANDO WEB"
+			d.nome_equip = "PORTAL   701"
 
-			time.Sleep(500 * time.Millisecond);
+			switch disp.Screen {
+			case SCREEN_TAGS:
+				d.tags_unica = tagSet.Count()
+				d.tags_total = atomic.LoadInt64(&tags)
+			case SCREEN_ADDR:
+				d.addr_equip = "192.168.1.200"
+				d.read_verif = "LEITOR   OK"
+			}
+
+			info <- d
 		}
 	}()
 
+skip_monitoring:
 	select {}
 }
