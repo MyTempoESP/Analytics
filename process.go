@@ -231,17 +231,18 @@ func (a *Ay) Process() {
         	forth.Run(fmt.Sprintf(": SCX 3 FOR I DRW NXT 0 DRW ;"))
 
 		nome_equip := "PORTAL   701"
-		tags_unica := fmt.Sprintf("UNICAS   %d", tagSet.Count())
-		tags_total := fmt.Sprintf("REGIST.  %d", atomic.LoadInt64(&tags))
 		comm_verif := "COMUNICANDO WEB"
 
 		for {
+			tags_unica := fmt.Sprintf("UNICAS   %d", tagSet.Count())
+			tags_total := fmt.Sprintf("REGIST.  %d", atomic.LoadInt64(&tags))
+
 			forth.Run(
 			    fmt.Sprintf("%s %s %s %s SCX",
-				forth.getBytes(nome_equip),
-				forth.getBytes(tags_unica),
-				forth.getBytes(tags_total),
-				forth.getBytes(comm_verif),
+				forth.GetBytes(nome_equip),
+				forth.GetBytes(tags_unica),
+				forth.GetBytes(tags_total),
+				forth.GetBytes(comm_verif),
 			    ),
 			)
 
