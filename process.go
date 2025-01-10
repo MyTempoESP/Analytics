@@ -6,7 +6,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/MyTempoESP/dial"
+	"github.com/MyTempoESP/flick"
 )
 
 const (
@@ -215,7 +215,7 @@ func (a *Ay) Process() {
 
 	go func() {
 
-		ino, err := dial.NewArduino()
+		forth, err := flick.NewSerialForth()
 
 		if err != nil {
 
@@ -224,13 +224,28 @@ func (a *Ay) Process() {
 			return
 		}
 
-		defer ino.Close()
+		defer forth.Close()
+
+
+        	forth.Run(": DRW 0 m $ d a ;")
+        	forth.Run(fmt.Sprintf(": SCX 3 FOR I DRW NXT 0 DRW ;"))
+
+		nome_equip := "PORTAL   701"
+		tags_unica := fmt.Sprintf("UNICAS   %d", tagSet.Count())
+		tags_total := fmt.Sprintf("REGIST.  %d", atomic.LoadInt64(&tags))
+		comm_verif := "COMUNICANDO WEB"
 
 		for {
-			ino.Send("-------\n")
-			ino.Send(fmt.Sprintf("Tags: %d\n", atomic.LoadInt64(&tags)))
-			ino.Send(fmt.Sprintf("Unicas: %d\n", tagSet.Count()))
-			ino.Send("OK\n")
+			forth.Run(
+			    fmt.Sprintf("%s %s %s %s SCX",
+				forth.getBytes(nome_equip),
+				forth.getBytes(tags_unica),
+				forth.getBytes(tags_total),
+				forth.getBytes(comm_verif),
+			    ),
+			)
+
+			time.Sleep(500 * time.Millisecond);
 		}
 	}()
 
