@@ -1,11 +1,11 @@
-module envio
+module analytics
 
-go 1.22.3
+go 1.21
 
 require (
-	github.com/MyTempoESP/dial v0.0.0-20250107181736-54d60af78281
-	github.com/mytempoesp/mysql-easy v0.0.0-20240823115633-cdc22aab30a4
-	github.com/mytempoesp/rabbit v0.0.1-alpha.0.20240912131652-58dc17b9d7de
+	github.com/MyTempoesp/flick v0.0.0-20250110182227-77957a8d8ee8
+	github.com/mytempoesp/mysql-easy v0.1.1
+	github.com/mytempoesp/rabbit v0.0.1-alpha
 	github.com/rabbitmq/amqp091-go v1.10.0
 )
 

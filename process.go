@@ -6,7 +6,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/MyTempoESP/flick"
+	"github.com/MyTempoesp/flick"
 )
 
 const (
