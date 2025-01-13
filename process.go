@@ -222,14 +222,12 @@ func (a *Ay) Process() {
 
 		display.Forth.Run(": DRW 0 m $ d a ;")
 		display.Forth.Run(": SCX 3 FOR I DRW NXT 0 DRW 6 IN 1 = ;")
-	
+
 		for {
 			d := DisplayInfo{}
 
 			d.comm_verif = "COMUNICANDO WEB"
 			d.nome_equip = "PORTAL   701"
-
-			display.SwitchScreens()
 
 			switch display.Screen {
 			case SCREEN_TAGS:
@@ -244,10 +242,11 @@ func (a *Ay) Process() {
 				display.ScreenAddr(d)
 			}
 
-			time.Sleep(500 * time.Millisecond)
+			display.SwitchScreens()
+			time.Sleep(100 * time.Millisecond)
 		}
 	}()
-	
+
 skip_monitoring:
 	select {}
 }
