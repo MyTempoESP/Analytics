@@ -210,7 +210,7 @@ func (a *Ay) Process() {
 		}
 	}()
 
-	disp, err := NewSerialDisplay()
+	display, err := NewSerialDisplay()
 
 	/* > Monitoring can be skipped if NewSerialDisplay() errors out, disabling the routine in Line 221 */
 	if err != nil {
@@ -219,27 +219,35 @@ func (a *Ay) Process() {
 	}
 
 	go func() {
-		info := disp.Start()
 
+		display.Forth.Run(": DRW 0 m $ d a ;")
+		display.Forth.Run(": SCX 3 FOR I DRW NXT 0 DRW 6 IN 1 = ;")
+	
 		for {
 			d := DisplayInfo{}
 
 			d.comm_verif = "COMUNICANDO WEB"
 			d.nome_equip = "PORTAL   701"
 
-			switch disp.Screen {
+			display.SwitchScreens()
+
+			switch display.Screen {
 			case SCREEN_TAGS:
 				d.tags_unica = tagSet.Count()
 				d.tags_total = atomic.LoadInt64(&tags)
+
+				display.ScreenTags(d)
 			case SCREEN_ADDR:
 				d.addr_equip = "192.168.1.200"
 				d.read_verif = "LEITOR   OK"
+
+				display.ScreenAddr(d)
 			}
 
-			info <- d
+			time.Sleep(500 * time.Millisecond)
 		}
 	}()
-
+	
 skip_monitoring:
 	select {}
 }

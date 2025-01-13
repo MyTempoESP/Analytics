@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"time"
 
 	"github.com/MyTempoesp/flick"
 )
@@ -18,14 +16,15 @@ type DisplayInfo struct {
 
 type SerialDisplay struct {
 	Info   <-chan DisplayInfo
+	Forth  flick.SerialForth
 	Screen int
 
-	forth flick.SerialForth
+	switchButtonToggled bool
 }
 
 func NewSerialDisplay() (display SerialDisplay, err error) {
 
-	f, err := flick.NewSerialForth()
+	f, err := flick.NewSerialForth("/dev/ttyUSB0")
 
 	if err != nil {
 
@@ -34,39 +33,31 @@ func NewSerialDisplay() (display SerialDisplay, err error) {
 		return
 	}
 
-	display.forth = f
+	display.Forth = f
 
 	return
 }
 
-func (display *SerialDisplay) Start() (info chan<- DisplayInfo) {
+func (display *SerialDisplay) SwitchScreens() {
 
-	infoExchange := make(chan DisplayInfo)
+	res, err := display.Forth.Query(".")
 
-	display.Info = infoExchange
+	if err != nil {
 
-	go func() {
+		return
+	}
 
-		display.forth.Run(": DRW 0 m $ d a ;")
-		display.forth.Run(": SCX 3 FOR I DRW NXT 0 DRW ;")
+	if res[0] == '0' && !display.switchButtonToggled {
 
-		data := <-display.Info
+		display.Screen++
+		display.Screen %= 2
 
-		for {
-			switch display.Screen {
-			case SCREEN_TAGS:
-				display.ScreenTags(data)
-			case SCREEN_ADDR:
-				display.ScreenAddr(data)
-			}
+		display.switchButtonToggled = true 
+	}
 
-			fmt.Println(display.forth.Query("6 IN 1 = ."))
+	if res[0] == '1' && display.switchButtonToggled {
 
-			time.Sleep(500 * time.Millisecond)
-		}
-	}()
-
-	info = infoExchange
-
-	return
+		display.switchButtonToggled = false
+	}
 }
+

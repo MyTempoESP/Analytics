@@ -18,12 +18,12 @@ func (display *SerialDisplay) ScreenTags(data DisplayInfo) {
 	tags_unica := fmt.Sprintf("UNICAS   %d", data.tags_unica)
 	tags_total := fmt.Sprintf("REGIST.  %d", data.tags_total)
 
-	display.forth.Run(
+	display.Forth.Run(
 		fmt.Sprintf("%s %s %s %s SCX", // Call SCX with screen data
-			display.forth.GetBytes(nome_equip),
-			display.forth.GetBytes(tags_unica),
-			display.forth.GetBytes(tags_total),
-			display.forth.GetBytes(comm_verif),
+			display.Forth.GetBytes(nome_equip),
+			display.Forth.GetBytes(tags_unica),
+			display.Forth.GetBytes(tags_total),
+			display.Forth.GetBytes(comm_verif),
 		),
 	)
 }
@@ -35,12 +35,12 @@ func (display *SerialDisplay) ScreenAddr(data DisplayInfo) {
 	addr_equip := data.addr_equip
 	read_verif := data.read_verif
 
-	display.forth.Run(
+	display.Forth.Run(
 		fmt.Sprintf("%s %s %s %s SCX", // Call SCX with screen data
-			display.forth.GetBytes(nome_equip),
-			display.forth.GetBytes(addr_equip),
-			display.forth.GetBytes(read_verif),
-			display.forth.GetBytes(comm_verif),
+			display.Forth.GetBytes(nome_equip),
+			display.Forth.GetBytes(addr_equip),
+			display.Forth.GetBytes(read_verif),
+			display.Forth.GetBytes(comm_verif),
 		),
 	)
 }
