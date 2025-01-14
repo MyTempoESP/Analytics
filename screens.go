@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+
+	"github.com/MyTempoesp/flick"
 )
 
 const (
@@ -11,36 +13,49 @@ const (
 	SCREEN_STAT
 )
 
+func (display *SerialDisplay) S(r1, r2, r3, r4 string, l1, v1, l2, v2, l3, v3, l4, v4 int64) {
+
+	display.Forth.Send(
+		fmt.Sprintf(r1+r2+r3+r4, l1, v1, l2, v2, l3, v3, l4, v4),
+	)
+}
+
 func (display *SerialDisplay) ScreenTags(data DisplayInfo) {
 
-	nome_equip := data.nome_equip
-	comm_verif := data.comm_verif
-	tags_unica := fmt.Sprintf("UNICAS   %d", data.tags_unica)
-	tags_total := fmt.Sprintf("REGIST.  %d", data.tags_total)
+	nome_equip := int64(data.nome_equip)
+	comm_verif := int64(data.comm_verif)
+	tags_unica := data.tags_unica
+	tags_total := data.tags_total
 
-	display.Forth.Run(
-		fmt.Sprintf("%s %s %s %s SCX", // Call SCX with screen data
-			display.Forth.GetBytes(nome_equip),
-			display.Forth.GetBytes(tags_unica),
-			display.Forth.GetBytes(tags_total),
-			display.Forth.GetBytes(comm_verif),
-		),
+	display.S(
+		"%d lbl %d num",
+		"%d lbl %d num",
+		"%d lbl %d num",
+		"%d lbl %d val",
+
+		flick.PORTAL, nome_equip,
+		flick.REGIST, tags_total,
+		flick.UNICAS, tags_unica,
+		flick.COMUNICANDO, comm_verif,
 	)
 }
 
 func (display *SerialDisplay) ScreenAddr(data DisplayInfo) {
 
-	nome_equip := data.nome_equip
-	comm_verif := data.comm_verif
-	addr_equip := data.addr_equip
-	read_verif := data.read_verif
+	nome_equip := int64(data.nome_equip)
+	comm_verif := int64(data.comm_verif)
+	addr_equip := int64(data.addr_equip)
+	read_verif := int64(data.read_verif)
 
-	display.Forth.Run(
-		fmt.Sprintf("%s %s %s %s SCX", // Call SCX with screen data
-			display.Forth.GetBytes(nome_equip),
-			display.Forth.GetBytes(addr_equip),
-			display.Forth.GetBytes(read_verif),
-			display.Forth.GetBytes(comm_verif),
-		),
+	display.S(
+		"%d lbl %d num",
+		"%d lbl %d %d %d %d ip",
+		"%d lbl %d num",
+		"%d lbl %d val",
+
+		flick.PORTAL, nome_equip,
+		flick.IP, addr_equip,
+		flick.LEITOR, read_verif,
+		flick.COMUNICANDO, comm_verif,
 	)
 }

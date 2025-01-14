@@ -4,6 +4,8 @@ import (
 	"log"
 	"sync/atomic"
 	"time"
+
+	"github.com/MyTempoesp/flick"
 )
 
 const (
@@ -220,14 +222,11 @@ func (a *Ay) Process() {
 
 	go func() {
 
-		display.Forth.Run(": DRW 0 m $ d a ;")
-		display.Forth.Run(": SCX 3 FOR I DRW NXT 0 DRW 6 IN 1 = ;")
-
 		for {
 			d := DisplayInfo{}
 
-			d.comm_verif = "COMUNICANDO WEB"
-			d.nome_equip = "PORTAL   701"
+			d.comm_verif = flick.WEB
+			d.nome_equip = 701
 
 			switch display.Screen {
 			case SCREEN_TAGS:
@@ -236,14 +235,14 @@ func (a *Ay) Process() {
 
 				display.ScreenTags(d)
 			case SCREEN_ADDR:
-				d.addr_equip = "192.168.1.200"
-				d.read_verif = "LEITOR   OK"
+				d.addr_equip = 192
+				d.read_verif = 1
 
 				display.ScreenAddr(d)
 			}
 
 			display.SwitchScreens()
-			time.Sleep(100 * time.Millisecond)
+			//time.Sleep(100 * time.Millisecond)
 		}
 	}()
 

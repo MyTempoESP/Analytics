@@ -5,7 +5,7 @@ go 1.22.3
 toolchain go1.23.4
 
 require (
-	github.com/MyTempoesp/flick v0.0.0-20250113124433-45467343c26e
+	github.com/MyTempoesp/flick v0.0.0-20250114141252-14fd14b6b6c2
 	github.com/mytempoesp/mysql-easy v0.1.1
 	github.com/mytempoesp/rabbit v0.0.1-alpha.0.20240912131652-58dc17b9d7de
 	github.com/rabbitmq/amqp091-go v1.10.0

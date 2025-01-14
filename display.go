@@ -8,15 +8,13 @@ import (
 
 type DisplayInfo struct {
 	tags_unica, tags_total int64
-	nome_equip, comm_verif string
-	addr_equip, read_verif string
-	wifi_verif, lt4g_verif string
-	nome_prova, nome_local string
+	addr_equip, read_verif int
+	nome_equip, comm_verif int
 }
 
 type SerialDisplay struct {
 	Info   <-chan DisplayInfo
-	Forth  flick.SerialForth
+	Forth  *flick.MyTempo_Forth
 	Screen int
 
 	switchButtonToggled bool
@@ -24,7 +22,7 @@ type SerialDisplay struct {
 
 func NewSerialDisplay() (display SerialDisplay, err error) {
 
-	f, err := flick.NewSerialForth("/dev/ttyUSB0")
+	f, err := flick.NewForth("/dev/ttyUSB0")
 
 	if err != nil {
 
@@ -33,14 +31,14 @@ func NewSerialDisplay() (display SerialDisplay, err error) {
 		return
 	}
 
-	display.Forth = f
+	display.Forth = &f
 
 	return
 }
 
 func (display *SerialDisplay) SwitchScreens() {
 
-	res, err := display.Forth.Query(".")
+	res, err := display.Forth.Send(".")
 
 	if err != nil {
 
@@ -52,7 +50,7 @@ func (display *SerialDisplay) SwitchScreens() {
 		display.Screen++
 		display.Screen %= 2
 
-		display.switchButtonToggled = true 
+		display.switchButtonToggled = true
 	}
 
 	if res[0] == '1' && display.switchButtonToggled {
@@ -60,4 +58,3 @@ func (display *SerialDisplay) SwitchScreens() {
 		display.switchButtonToggled = false
 	}
 }
-
