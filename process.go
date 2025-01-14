@@ -243,7 +243,7 @@ func (a *Ay) Process() {
 
 			display.SwitchScreens()
 
-			time.Sleep(50 * time.Millisecond)
+			//time.Sleep(50 * time.Millisecond)
 		}
 	}()
 
