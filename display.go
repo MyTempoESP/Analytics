@@ -35,6 +35,11 @@ func NewSerialDisplay() (display SerialDisplay, err error) {
 
 	display.Forth = &f
 
+	f.Send("VAR bac")
+	f.Send("VAR bst")
+	f.Send(": btn 7 IN 0 = ;")
+	f.Send(": chb bst @ btn DUP ROT SWP NOT AND bac ! bst ! ;")
+
 	return
 }
 
