@@ -31,6 +31,8 @@ func NewSerialDisplay() (display SerialDisplay, err error) {
 		return
 	}
 
+	f.Start()
+
 	display.Forth = &f
 
 	return
@@ -38,7 +40,9 @@ func NewSerialDisplay() (display SerialDisplay, err error) {
 
 func (display *SerialDisplay) SwitchScreens() {
 
-	res, err := display.Forth.Send(".")
+	// TODO: onrelease actions
+
+	res, err := display.Forth.Send("7 IN .")
 
 	if err != nil {
 

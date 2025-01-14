@@ -16,7 +16,7 @@ const (
 func (display *SerialDisplay) S(r1, r2, r3, r4 string, l1, v1, l2, v2, l3, v3, l4, v4 int64) {
 
 	display.Forth.Send(
-		fmt.Sprintf(r1+r2+r3+r4, l1, v1, l2, v2, l3, v3, l4, v4),
+		fmt.Sprintf(r1+" "+r2+" "+r3+" "+r4, l1, v1, l2, v2, l3, v3, l4, v4),
 	)
 }
 
@@ -33,7 +33,7 @@ func (display *SerialDisplay) ScreenTags(data DisplayInfo) {
 		"%d lbl %d num",
 		"%d lbl %d val",
 
-		flick.PORTAL, nome_equip,
+		0, nome_equip,
 		flick.REGIST, tags_total,
 		flick.UNICAS, tags_unica,
 		flick.COMUNICANDO, comm_verif,
@@ -49,7 +49,7 @@ func (display *SerialDisplay) ScreenAddr(data DisplayInfo) {
 
 	display.S(
 		"%d lbl %d num",
-		"%d lbl %d %d %d %d ip",
+		"%d lbl %d num",
 		"%d lbl %d num",
 		"%d lbl %d val",
 
