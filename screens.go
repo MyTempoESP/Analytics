@@ -40,7 +40,7 @@ func (display *SerialDisplay) ScreenAddr(nome, commVerif int, ip [4]int, leitorO
 				" %d lbl %d val",
 
 			flick.PORTAL, nome,
-			flick.IP, ip[0], ip[1], ip[2], ip[3],
+			flick.IP, ip[3], ip[2], ip[1], ip[0],
 			flick.LEITOR, leitorOk,
 			flick.COMUNICANDO, commVerif,
 		),
