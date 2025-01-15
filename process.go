@@ -254,10 +254,10 @@ func (a *Ay) Process() {
 				display.ScreenStat(
 					NUM_EQUIP,
 					comm_verif,
-					atomic.LoadInt64(&antennas[0]),
-					atomic.LoadInt64(&antennas[1]),
-					atomic.LoadInt64(&antennas[2]),
-					atomic.LoadInt64(&antennas[3]),
+					ToForthNumber(atomic.LoadInt64(&antennas[0])),
+					ToForthNumber(atomic.LoadInt64(&antennas[1])),
+					ToForthNumber(atomic.LoadInt64(&antennas[2])),
+					ToForthNumber(atomic.LoadInt64(&antennas[3])),
 				)
 			}
 

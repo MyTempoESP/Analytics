@@ -13,6 +13,35 @@ const (
 	SCREEN_STAT
 )
 
+type ForthNumber struct {
+	Value     int64
+	Magnitude int // 1, 10, 100, 1000 (10^Magnitude)
+}
+
+func ToForthNumber(n int64) (f ForthNumber) {
+
+	if n < 1000 {
+
+		f.Value = n
+		f.Magnitude = 0
+
+		return
+	}
+
+	if n < 1_000_000 {
+
+		f.Value = n / 1000
+		f.Magnitude = 3
+
+		return
+	}
+
+	f.Value = n / 1_000_000
+	f.Magnitude = 6
+
+	return
+}
+
 func (display *SerialDisplay) ScreenTags(nome, commVerif int, tags, tagsUnicas int64) {
 
 	display.Forth.Send(
@@ -64,18 +93,22 @@ func (display *SerialDisplay) ScreenWifi(nome, commVerif, wifiVerif, LTE4GVerif 
 	)
 }
 
-func (display *SerialDisplay) ScreenStat(nome, commVerif int, a1, a2, a3, a4 int64) {
+func (display *SerialDisplay) ScreenStat(nome, commVerif int, a1, a2, a3, a4 ForthNumber) {
 
 	display.Forth.Send(
 		fmt.Sprintf(
 			"%d lbl %d num"+
-				" %d %d"+
-				" %d %d atn"+
+				" %d %d"+ // A4 Val+Mag
+				" %d %d"+ // A3 Val+Mag
+				" %d %d"+ // A2 Val+Mag
+				" %d %d atn"+ // A1 Val+Mag then display
 				" %d lbl %d val",
 
 			flick.PORTAL, nome,
-			a4, a3,
-			a2, a1,
+			a4.Value, a4.Magnitude,
+			a3.Value, a3.Magnitude,
+			a2.Value, a2.Magnitude,
+			a1.Value, a1.Magnitude,
 			flick.COMUNICANDO, commVerif,
 		),
 	)
