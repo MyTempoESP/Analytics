@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 	"sync/atomic"
 	"time"
 
@@ -233,22 +234,22 @@ func (a *Ay) Process() {
 				display.ScreenTags(
 					NUM_EQUIP,
 					comm_verif,
-					atomic.LoadInt64(&tags),
-					tagSet.Count(),
+					/* Tags */ atomic.LoadInt64(&tags),
+					/* Atletas */ tagSet.Count(),
 				)
 			case SCREEN_ADDR:
 				display.ScreenAddr(
 					NUM_EQUIP,
 					comm_verif,
-					ip,
-					flick.OK,
+					/* IP */ IPIfy(os.Getenv("READER_IP")),
+					/* Leitor */ flick.OK,
 				)
 			case SCREEN_WIFI:
 				display.ScreenWifi(
 					NUM_EQUIP,
 					comm_verif,
-					flick.CONECTAD,
-					flick.DESLIGAD,
+					/* WIFI */ flick.CONECTAD,
+					/* 4G */ flick.DESLIGAD,
 				)
 			case SCREEN_STAT:
 				display.ScreenStat(

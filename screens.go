@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/MyTempoesp/flick"
 )
@@ -16,6 +18,44 @@ const (
 type ForthNumber struct {
 	Value     int64
 	Magnitude int // 1, 10, 100, 1000 (10^Magnitude)
+}
+
+func IPIfy(ip string) (out [4]int, err error) {
+
+	parts := strings.Split(ip, ".")
+
+	if len(parts) != 4 {
+
+		err = fmt.Errorf("invalid IP address format: %s", ip)
+
+		return
+	}
+
+	var result []int
+	var num int
+
+	for _, part := range parts {
+
+		num, err = strconv.Atoi(part)
+
+		if err != nil {
+
+			err = fmt.Errorf("invalid number in IP address: %s", part)
+
+			return
+		}
+
+		if num < 0 || num > 255 {
+
+			fmt.Errorf("IP address octet out of range: %d", num)
+
+			return
+		}
+
+		result = append(result, num)
+	}
+
+	return
 }
 
 func ToForthNumber(n int64) (f ForthNumber) {
