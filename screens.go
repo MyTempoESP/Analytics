@@ -63,3 +63,18 @@ func (display *SerialDisplay) ScreenWifi(nome, commVerif, wifiVerif, LTE4GVerif 
 		),
 	)
 }
+
+func (display *SerialDisplay) ScreenStat(nome, commVerif int, a1, a2, a3, a4 int64) {
+
+	display.Forth.Send(
+		fmt.Sprintf(
+			"%d lbl %d num"+
+				" %d lbl %d val"+
+				" %d %d %d %d atn",
+
+			flick.PORTAL, nome,
+			flick.COMUNICANDO, commVerif,
+			a4, a3, a2, a1,
+		),
+	)
+}

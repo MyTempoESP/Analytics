@@ -155,7 +155,7 @@ func (a *Ay) Process() {
 	var (
 		tags int64 /* shared */
 
-		antennas [4]int64
+		antennas [4]int64 /* shared */
 	)
 
 	tagSet := NewIntSet()
@@ -202,10 +202,9 @@ func (a *Ay) Process() {
 
 				atomic.StoreInt64(&tags, 0)
 
-				antennas[0] = 0
-				antennas[1] = 0
-				antennas[2] = 0
-				antennas[3] = 0
+				for i := range 4 {
+					atomic.StoreInt64(&antennas[i], 0)
+				}
 			}
 
 			a.AtualizarAntenas(&antennas)
@@ -250,6 +249,15 @@ func (a *Ay) Process() {
 					comm_verif,
 					flick.CONECTAD,
 					flick.DESLIGAD,
+				)
+			case SCREEN_STAT:
+				display.ScreenStat(
+					NUM_EQUIP,
+					comm_verif,
+					atomic.LoadInt64(&antennas[0]),
+					atomic.LoadInt64(&antennas[1]),
+					atomic.LoadInt64(&antennas[2]),
+					atomic.LoadInt64(&antennas[3]),
 				)
 			}
 
