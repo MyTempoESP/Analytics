@@ -242,7 +242,7 @@ func (a *Ay) Process() {
 					NUM_EQUIP,
 					comm_verif,
 					ip,
-					1,
+					flick.OK,
 				)
 			case SCREEN_WIFI:
 				display.ScreenWifi(
