@@ -52,8 +52,8 @@ func (display *SerialDisplay) ScreenWifi(nome, commVerif, wifiVerif, LTE4GVerif 
 	display.Forth.Send(
 		fmt.Sprintf(
 			"%d lbl %d num"+
-				" %d lbl %d num"+
-				" %d lbl %d num"+
+				" %d lbl %d val"+
+				" %d lbl %d val"+
 				" %d lbl %d val",
 
 			flick.PORTAL, nome,
