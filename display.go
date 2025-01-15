@@ -10,6 +10,7 @@ type DisplayInfo struct {
 	tags_unica, tags_total int64
 	addr_equip, read_verif int
 	nome_equip, comm_verif int
+	wifi_verif, lt4g_verif int
 }
 
 type SerialDisplay struct {
@@ -59,7 +60,7 @@ func (display *SerialDisplay) SwitchScreens() {
 	if res[0] == '-' && !display.switchButtonToggled {
 
 		display.Screen++
-		display.Screen %= 2
+		display.Screen %= 3
 
 		display.switchButtonToggled = true
 	}

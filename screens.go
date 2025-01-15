@@ -33,7 +33,7 @@ func (display *SerialDisplay) ScreenTags(data DisplayInfo) {
 		"%d lbl %d num",
 		"%d lbl %d val",
 
-		0, nome_equip,
+		flick.PORTAL, nome_equip,
 		flick.REGIST, tags_total,
 		flick.UNICAS, tags_unica,
 		flick.COMUNICANDO, comm_verif,
@@ -56,6 +56,26 @@ func (display *SerialDisplay) ScreenAddr(data DisplayInfo) {
 		flick.PORTAL, nome_equip,
 		flick.IP, addr_equip,
 		flick.LEITOR, read_verif,
+		flick.COMUNICANDO, comm_verif,
+	)
+}
+
+func (display *SerialDisplay) ScreenWifi(data DisplayInfo) {
+
+	nome_equip := int64(data.nome_equip)
+	comm_verif := int64(data.comm_verif)
+	wifi_verif := int64(data.wifi_verif)
+	lt4g_verif := int64(data.lt4g_verif)
+
+	display.S(
+		"%d lbl %d num",
+		"%d lbl %d val",
+		"%d lbl %d val",
+		"%d lbl %d val",
+
+		flick.PORTAL, nome_equip,
+		flick.WIFI, wifi_verif,
+		flick.LTE4G, lt4g_verif,
 		flick.COMUNICANDO, comm_verif,
 	)
 }

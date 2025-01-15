@@ -239,6 +239,11 @@ func (a *Ay) Process() {
 				d.read_verif = 1
 
 				display.ScreenAddr(d)
+			case SCREEN_WIFI:
+				d.wifi_verif = flick.CONECTAD
+				d.lt4g_verif = flick.DESLIGAD
+
+				display.ScreenWifi(d)
 			}
 
 			display.SwitchScreens()
