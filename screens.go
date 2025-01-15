@@ -73,8 +73,9 @@ func (display *SerialDisplay) ScreenStat(nome, commVerif int, a1, a2, a3, a4 int
 				" %d %d %d %d atn",
 
 			flick.PORTAL, nome,
+			a4, a3,
+			a2, a1,
 			flick.COMUNICANDO, commVerif,
-			a4, a3, a2, a1,
 		),
 	)
 }
