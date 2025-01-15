@@ -69,8 +69,9 @@ func (display *SerialDisplay) ScreenStat(nome, commVerif int, a1, a2, a3, a4 int
 	display.Forth.Send(
 		fmt.Sprintf(
 			"%d lbl %d num"+
-				" %d lbl %d val"+
-				" %d %d %d %d atn",
+				" %d %d"+
+				" %d %d atn"+
+				" %d lbl %d val",
 
 			flick.PORTAL, nome,
 			a4, a3,
