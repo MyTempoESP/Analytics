@@ -39,7 +39,7 @@ func NewSerialDisplay() (display SerialDisplay, err error) {
 	f.Send("VAR bst")
 	f.Send(": btn 7 IN 0 = ;")
 	f.Send(": chb bac @ NOT IF bst @ btn DUP ROT SWP NOT AND bac ! bst ! THN ;")
-	f.Send("50 0 TMI chb 1 TME")
+	f.Send("10 0 TMI chb 1 TME")
 
 	return
 }
@@ -49,6 +49,7 @@ func (display *SerialDisplay) SwitchScreens() {
 	// TODO: onrelease actions
 
 	res, err := display.Forth.Send("bac @ .")
+	defer display.Forth.Send("0 bac !")
 
 	if err != nil {
 
@@ -63,7 +64,7 @@ func (display *SerialDisplay) SwitchScreens() {
 		display.switchButtonToggled = true
 	}
 
-	if res[0] == '1' && display.switchButtonToggled {
+	if res[0] == '0' && display.switchButtonToggled {
 
 		display.switchButtonToggled = false
 	}
