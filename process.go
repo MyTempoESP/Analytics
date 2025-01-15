@@ -222,28 +222,35 @@ func (a *Ay) Process() {
 
 	go func() {
 
-		for {
-			d := DisplayInfo{}
+		const NUM_EQUIP = 701
+		var ip [4]int = [4]int{192, 168, 0, 1}
 
-			d.comm_verif = flick.WEB
-			d.nome_equip = 701
+		for {
+
+			comm_verif := flick.WEB
 
 			switch display.Screen {
 			case SCREEN_TAGS:
-				d.tags_unica = tagSet.Count()
-				d.tags_total = atomic.LoadInt64(&tags)
-
-				display.ScreenTags(d)
+				display.ScreenTags(
+					NUM_EQUIP,
+					comm_verif,
+					atomic.LoadInt64(&tags),
+					tagSet.Count(),
+				)
 			case SCREEN_ADDR:
-				d.addr_equip = 192
-				d.read_verif = 1
-
-				display.ScreenAddr(d)
+				display.ScreenAddr(
+					NUM_EQUIP,
+					comm_verif,
+					ip,
+					1,
+				)
 			case SCREEN_WIFI:
-				d.wifi_verif = flick.CONECTAD
-				d.lt4g_verif = flick.DESLIGAD
-
-				display.ScreenWifi(d)
+				display.ScreenWifi(
+					NUM_EQUIP,
+					comm_verif,
+					flick.CONECTAD,
+					flick.DESLIGAD,
+				)
 			}
 
 			display.SwitchScreens()

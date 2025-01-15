@@ -13,69 +13,53 @@ const (
 	SCREEN_STAT
 )
 
-func (display *SerialDisplay) S(r1, r2, r3, r4 string, l1, v1, l2, v2, l3, v3, l4, v4 int64) {
+func (display *SerialDisplay) ScreenTags(nome, commVerif int, tags, tagsUnicas int64) {
 
 	display.Forth.Send(
-		fmt.Sprintf(r1+" "+r2+" "+r3+" "+r4, l1, v1, l2, v2, l3, v3, l4, v4),
+		fmt.Sprintf(
+			"%d lbl %d num"+
+				" %d lbl %d num"+
+				" %d lbl %d num"+
+				" %d lbl %d val",
+
+			flick.PORTAL, nome,
+			flick.REGIST, tags,
+			flick.UNICAS, tagsUnicas,
+			flick.COMUNICANDO, commVerif,
+		),
 	)
 }
 
-func (display *SerialDisplay) ScreenTags(data DisplayInfo) {
+func (display *SerialDisplay) ScreenAddr(nome, commVerif int, ip [4]int, leitorOk int) {
 
-	nome_equip := int64(data.nome_equip)
-	comm_verif := int64(data.comm_verif)
-	tags_unica := data.tags_unica
-	tags_total := data.tags_total
+	display.Forth.Send(
+		fmt.Sprintf(
+			"%d lbl %d num"+
+				" %d lbl %d %d %d %d ip"+
+				" %d lbl %d num"+
+				" %d lbl %d val",
 
-	display.S(
-		"%d lbl %d num",
-		"%d lbl %d num",
-		"%d lbl %d num",
-		"%d lbl %d val",
-
-		flick.PORTAL, nome_equip,
-		flick.REGIST, tags_total,
-		flick.UNICAS, tags_unica,
-		flick.COMUNICANDO, comm_verif,
+			flick.PORTAL, nome,
+			flick.IP, ip[0], ip[1], ip[2], ip[3],
+			flick.LEITOR, leitorOk,
+			flick.COMUNICANDO, commVerif,
+		),
 	)
 }
 
-func (display *SerialDisplay) ScreenAddr(data DisplayInfo) {
+func (display *SerialDisplay) ScreenWifi(nome, commVerif, wifiVerif, LTE4GVerif int) {
 
-	nome_equip := int64(data.nome_equip)
-	comm_verif := int64(data.comm_verif)
-	addr_equip := int64(data.addr_equip)
-	read_verif := int64(data.read_verif)
+	display.Forth.Send(
+		fmt.Sprintf(
+			"%d lbl %d num"+
+				" %d lbl %d num"+
+				" %d lbl %d num"+
+				" %d lbl %d val",
 
-	display.S(
-		"%d lbl %d num",
-		"%d lbl %d num",
-		"%d lbl %d num",
-		"%d lbl %d val",
-
-		flick.PORTAL, nome_equip,
-		flick.IP, addr_equip,
-		flick.LEITOR, read_verif,
-		flick.COMUNICANDO, comm_verif,
-	)
-}
-
-func (display *SerialDisplay) ScreenWifi(data DisplayInfo) {
-
-	nome_equip := int64(data.nome_equip)
-	comm_verif := int64(data.comm_verif)
-	wifi_verif := int64(data.wifi_verif)
-	lt4g_verif := int64(data.lt4g_verif)
-
-	display.S(
-		"%d lbl %d num",
-		"%d lbl %d val",
-		"%d lbl %d val",
-		"%d lbl %d val",
-
-		flick.PORTAL, nome_equip,
-		flick.WIFI, wifi_verif,
-		flick.LTE4G, lt4g_verif,
-		flick.COMUNICANDO, comm_verif,
+			flick.PORTAL, nome,
+			flick.WIFI, wifiVerif,
+			flick.LTE4G, LTE4GVerif,
+			flick.COMUNICANDO, commVerif,
+		),
 	)
 }
