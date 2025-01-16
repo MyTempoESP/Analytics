@@ -37,7 +37,7 @@ func (display *SerialDisplay) ScreenAddr(nome, ping int, ip [4]int, leitorOk int
 			"%d lbl %d num"+
 				" %d lbl %d %d %d %d ip"+
 				" %d lbl %d val"+
-				" %d lbl %d val",
+				" %d lbl %d num",
 
 			flick.PORTAL, nome,
 			flick.IP, ip[3], ip[2], ip[1], ip[0],
