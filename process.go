@@ -2,10 +2,11 @@ package main
 
 import (
 	"log"
-	"os"
 	"sync/atomic"
 	"time"
 
+	"analytics/intSet"
+	"analytics/lcdlogger"
 	"github.com/MyTempoesp/flick"
 )
 
@@ -159,7 +160,7 @@ func (a *Ay) Process() {
 		antennas [4]int64 /* shared */
 	)
 
-	tagSet := NewIntSet()
+	tagSet := intSet.New()
 
 	go func() {
 
@@ -212,10 +213,11 @@ func (a *Ay) Process() {
 		}
 	}()
 
-	display, err := NewSerialDisplay()
+	display, displayErr := lcdlogger.NewSerialDisplay()
+	reader, readerErr := lcdlogger.NewReaderPinger()
 
 	/* > Monitoring can be skipped if NewSerialDisplay() errors out, disabling the routine in Line 221 */
-	if err != nil {
+	if displayErr != nil || readerErr != nil {
 
 		goto skip_monitoring
 	}
@@ -223,42 +225,51 @@ func (a *Ay) Process() {
 	go func() {
 
 		const NUM_EQUIP = 701
-		var ip [4]int = [4]int{192, 168, 0, 1}
 
 		for {
 
 			comm_verif := flick.WEB
 
 			switch display.Screen {
-			case SCREEN_TAGS:
+			case lcdlogger.SCREEN_TAGS:
 				display.ScreenTags(
 					NUM_EQUIP,
 					comm_verif,
 					/* Tags */ atomic.LoadInt64(&tags),
 					/* Atletas */ tagSet.Count(),
 				)
-			case SCREEN_ADDR:
+			case lcdlogger.SCREEN_ADDR:
+
+				ip := reader.Octets
+				leitor := flick.OK
+
+				if !reader.State {
+
+					ip = [4]int{0, 0, 0, 0}
+					leitor = flick.DESLIGAD
+				}
+
 				display.ScreenAddr(
 					NUM_EQUIP,
-					comm_verif,
-					/* IP */ IPIfy(os.Getenv("READER_IP")),
-					/* Leitor */ flick.OK,
+					reader.Ping,
+					/* IP */ ip,
+					/* Leitor */ leitor,
 				)
-			case SCREEN_WIFI:
+			case lcdlogger.SCREEN_WIFI:
 				display.ScreenWifi(
 					NUM_EQUIP,
 					comm_verif,
 					/* WIFI */ flick.CONECTAD,
 					/* 4G */ flick.DESLIGAD,
 				)
-			case SCREEN_STAT:
+			case lcdlogger.SCREEN_STAT:
 				display.ScreenStat(
 					NUM_EQUIP,
 					comm_verif,
-					ToForthNumber(atomic.LoadInt64(&antennas[0])),
-					ToForthNumber(atomic.LoadInt64(&antennas[1])),
-					ToForthNumber(atomic.LoadInt64(&antennas[2])),
-					ToForthNumber(atomic.LoadInt64(&antennas[3])),
+					lcdlogger.ToForthNumber(atomic.LoadInt64(&antennas[0])),
+					lcdlogger.ToForthNumber(atomic.LoadInt64(&antennas[1])),
+					lcdlogger.ToForthNumber(atomic.LoadInt64(&antennas[2])),
+					lcdlogger.ToForthNumber(atomic.LoadInt64(&antennas[3])),
 				)
 			}
 

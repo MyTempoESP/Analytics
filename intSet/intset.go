@@ -1,4 +1,4 @@
-package main
+package intSet
 
 import (
 	"sync"
@@ -13,7 +13,7 @@ type IntSet struct {
 	count int64
 }
 
-func NewIntSet() (s IntSet) {
+func New() (s IntSet) {
 	s.dataMutex.Lock()
 	s.data = make(map[int]struct{})
 	s.dataMutex.Unlock()

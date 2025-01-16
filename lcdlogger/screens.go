@@ -1,9 +1,7 @@
-package main
+package lcdlogger
 
 import (
 	"fmt"
-	"strconv"
-	"strings"
 
 	"github.com/MyTempoesp/flick"
 )
@@ -14,73 +12,6 @@ const (
 	SCREEN_WIFI
 	SCREEN_STAT
 )
-
-type ForthNumber struct {
-	Value     int64
-	Magnitude int // 1, 10, 100, 1000 (10^Magnitude)
-}
-
-func IPIfy(ip string) (out [4]int, err error) {
-
-	parts := strings.Split(ip, ".")
-
-	if len(parts) != 4 {
-
-		err = fmt.Errorf("invalid IP address format: %s", ip)
-
-		return
-	}
-
-	var result []int
-	var num int
-
-	for _, part := range parts {
-
-		num, err = strconv.Atoi(part)
-
-		if err != nil {
-
-			err = fmt.Errorf("invalid number in IP address: %s", part)
-
-			return
-		}
-
-		if num < 0 || num > 255 {
-
-			fmt.Errorf("IP address octet out of range: %d", num)
-
-			return
-		}
-
-		result = append(result, num)
-	}
-
-	return
-}
-
-func ToForthNumber(n int64) (f ForthNumber) {
-
-	if n < 1000 {
-
-		f.Value = n
-		f.Magnitude = 0
-
-		return
-	}
-
-	if n < 1_000_000 {
-
-		f.Value = n / 1000
-		f.Magnitude = 3
-
-		return
-	}
-
-	f.Value = n / 1_000_000
-	f.Magnitude = 6
-
-	return
-}
 
 func (display *SerialDisplay) ScreenTags(nome, commVerif int, tags, tagsUnicas int64) {
 
@@ -99,7 +30,7 @@ func (display *SerialDisplay) ScreenTags(nome, commVerif int, tags, tagsUnicas i
 	)
 }
 
-func (display *SerialDisplay) ScreenAddr(nome, commVerif int, ip [4]int, leitorOk int) {
+func (display *SerialDisplay) ScreenAddr(nome, ping int, ip [4]int, leitorOk int) {
 
 	display.Forth.Send(
 		fmt.Sprintf(
@@ -111,7 +42,7 @@ func (display *SerialDisplay) ScreenAddr(nome, commVerif int, ip [4]int, leitorO
 			flick.PORTAL, nome,
 			flick.IP, ip[3], ip[2], ip[1], ip[0],
 			flick.LEITOR, leitorOk,
-			flick.COMUNICANDO, commVerif,
+			flick.PING, ping,
 		),
 	)
 }
