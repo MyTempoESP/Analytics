@@ -68,7 +68,7 @@ func NewReaderPinger() (r ReaderPinger, err error) {
 		atomic.StoreInt64(&r.Ping, pkt.Rtt.Milliseconds())
 	}
 
-	p.Run()
+	go p.Run()
 
 	r.pinger = p
 
