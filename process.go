@@ -231,7 +231,7 @@ func (a *Ay) Process() {
 
 	go func() {
 
-		p, err := probing.NewPinger(readerIP)
+		p, err := probing.NewPinger("www.google.com")
 
 		//p.SetPrivileged(true)
 
@@ -242,11 +242,6 @@ func (a *Ay) Process() {
 
 		p.Count = 0xFFFE
 		p.Interval = 4 * time.Second
-
-		if err != nil {
-
-			return
-		}
 
 		p.OnSend = func(pkt *probing.Packet) {
 
