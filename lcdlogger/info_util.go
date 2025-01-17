@@ -10,9 +10,9 @@ type ForthNumber struct {
 	Magnitude int // 1, 10, 100, 1000 (10^Magnitude)
 }
 
-func IPIfy(ip string) (out [4]int) {
+func IPIfy(ip string) (out IPOctets) {
 
-	out = [4]int{0, 0, 0, 0}
+	out = IPOctets{0, 0, 0, 0}
 
 	parts := strings.Split(ip, ".")
 

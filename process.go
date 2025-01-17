@@ -2,12 +2,14 @@ package main
 
 import (
 	"log"
+	"os"
 	"sync/atomic"
 	"time"
 
 	"analytics/intSet"
 	"analytics/lcdlogger"
 	"github.com/MyTempoesp/flick"
+	"github.com/prometheus-community/pro-bing"
 )
 
 const (
@@ -213,9 +215,11 @@ func (a *Ay) Process() {
 		}
 	}()
 
+	var readerIP = os.Getenv("READER_IP")
+	var readerOctets = lcdlogger.IPIfy(readerIP)
+
 	var readerState atomic.Bool
 	var readerPing atomic.Int64
-	var readerIP [4]int
 
 	display, displayErr := lcdlogger.NewSerialDisplay()
 
@@ -227,20 +231,39 @@ func (a *Ay) Process() {
 
 	go func() {
 
-		reader, readerErr := lcdlogger.NewReaderPinger()
+		p, err := probing.NewPinger(readerIP)
 
-		if readerErr != nil {
+		//p.SetPrivileged(true)
+
+		if err != nil {
 
 			return
 		}
 
-		readerIP = reader.Octets
+		p.Count = 0xFFFE
+		p.Interval = 4 * time.Second
 
-		for {
-			<-time.After(1 * time.Second)
-			readerState.Store(reader.State.Load())
-			readerPing.Store(reader.Ping.Load())
+		if err != nil {
+
+			return
 		}
+
+		p.OnSend = func(pkt *probing.Packet) {
+
+			log.Printf("IP Addr: %s\n", pkt.IPAddr)
+
+			readerState.Store(false)
+		}
+
+		p.OnRecv = func(pkt *probing.Packet) {
+
+			log.Printf("IP Addr: %s receive, RTT: %v\n", pkt.IPAddr, pkt.Rtt)
+
+			readerState.Store(true)
+			readerPing.Store(pkt.Rtt.Milliseconds())
+		}
+
+		p.Run()
 	}()
 
 	go func() {
@@ -261,20 +284,18 @@ func (a *Ay) Process() {
 				)
 			case lcdlogger.SCREEN_ADDR:
 
-				ip := readerIP
-				leitor := flick.OK
+				ok := flick.OK
 
 				if !readerState.Load() {
 
-					ip = [4]int{0, 0, 0, 0}
-					leitor = flick.DESLIGAD
+					ok = flick.DESLIGAD
 				}
 
 				display.ScreenAddr(
 					NUM_EQUIP,
 					readerPing.Load(),
-					/* IP */ ip,
-					/* Leitor */ leitor,
+					/* IP */ readerOctets,
+					/* leitor OK? */ ok,
 				)
 			case lcdlogger.SCREEN_WIFI:
 				display.ScreenWifi(

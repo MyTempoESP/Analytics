@@ -13,6 +13,8 @@ const (
 	SCREEN_STAT
 )
 
+type IPOctets [4]int
+
 func (display *SerialDisplay) ScreenTags(nome, commVerif int, tags, tagsUnicas int64) {
 
 	display.Forth.Send(
@@ -30,7 +32,7 @@ func (display *SerialDisplay) ScreenTags(nome, commVerif int, tags, tagsUnicas i
 	)
 }
 
-func (display *SerialDisplay) ScreenAddr(nome int, ping int64, ip [4]int, leitorOk int) {
+func (display *SerialDisplay) ScreenAddr(nome int, ping int64, ip IPOctets, leitorOk int) {
 
 	display.Forth.Send(
 		fmt.Sprintf(
