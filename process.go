@@ -231,7 +231,7 @@ func (a *Ay) Process() {
 
 	go func() {
 
-		p, err := probing.NewPinger("www.google.com")
+		p, err := probing.NewPinger(readerIP)
 
 		//p.SetPrivileged(true)
 
