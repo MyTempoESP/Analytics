@@ -267,13 +267,13 @@ func (a *Ay) Process() {
 
 		for {
 
-			comm_verif := flick.WEB
+			commVerif := flick.WEB
 
 			switch display.Screen {
 			case lcdlogger.SCREEN_TAGS:
 				display.ScreenTags(
 					NUM_EQUIP,
-					comm_verif,
+					commVerif,
 					/* Tags */ tags.Load(),
 					/* Atletas */ tagSet.Count(),
 				)
@@ -288,6 +288,7 @@ func (a *Ay) Process() {
 
 				display.ScreenAddr(
 					NUM_EQUIP,
+					commVerif,
 					readerPing.Load(),
 					/* IP */ readerOctets,
 					/* leitor OK? */ ok,
@@ -295,14 +296,14 @@ func (a *Ay) Process() {
 			case lcdlogger.SCREEN_WIFI:
 				display.ScreenWifi(
 					NUM_EQUIP,
-					comm_verif,
+					commVerif,
 					/* WIFI */ flick.CONECTAD,
 					/* 4G */ flick.DESLIGAD,
 				)
 			case lcdlogger.SCREEN_STAT:
 				display.ScreenStat(
 					NUM_EQUIP,
-					comm_verif,
+					commVerif,
 					lcdlogger.ToForthNumber(antennas[0].Load()),
 					lcdlogger.ToForthNumber(antennas[1].Load()),
 					lcdlogger.ToForthNumber(antennas[2].Load()),
