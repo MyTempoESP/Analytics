@@ -13,7 +13,7 @@ func NewSimplePinger(ip string) (p *probing.Pinger, err error) {
 
 	p, err = probing.NewPinger(ip)
 
-	p.SetPrivileged(true)
+	//p.SetPrivileged(true)
 
 	if err != nil {
 
@@ -23,7 +23,7 @@ func NewSimplePinger(ip string) (p *probing.Pinger, err error) {
 	p.Count = 0xFFFE // basically all we need
 	//p.Size = *size
 	p.Interval = 4 * time.Second
-	p.Timeout = p.Interval
+	//p.Timeout = p.Interval
 	//p.TTL = *ttl
 	//p.InterfaceName = *iface
 	//p.SetPrivileged(*privileged)
