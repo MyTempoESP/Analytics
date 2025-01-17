@@ -240,6 +240,9 @@ func (a *Ay) Process() {
 			<-time.After(reader.Pinger.Interval)
 			readerState.Store(reader.State.Load())
 			readerPing.Store(reader.Ping.Load())
+
+			log.Println(reader.State.Load())
+			log.Println(reader.Ping.Load())
 		}
 	}()
 
