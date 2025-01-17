@@ -243,7 +243,7 @@ func (a *Ay) Process() {
 				ip := reader.Octets
 				leitor := flick.OK
 
-				if !reader.State {
+				if !reader.State.Load() {
 
 					ip = [4]int{0, 0, 0, 0}
 					leitor = flick.DESLIGAD
@@ -251,7 +251,7 @@ func (a *Ay) Process() {
 
 				display.ScreenAddr(
 					NUM_EQUIP,
-					reader.Ping,
+					atomic.LoadInt32(&reader.Ping),
 					/* IP */ ip,
 					/* Leitor */ leitor,
 				)

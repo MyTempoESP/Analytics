@@ -30,7 +30,7 @@ func (display *SerialDisplay) ScreenTags(nome, commVerif int, tags, tagsUnicas i
 	)
 }
 
-func (display *SerialDisplay) ScreenAddr(nome, ping int, ip [4]int, leitorOk int) {
+func (display *SerialDisplay) ScreenAddr(nome int, ping int32, ip [4]int, leitorOk int) {
 
 	display.Forth.Send(
 		fmt.Sprintf(
@@ -41,8 +41,8 @@ func (display *SerialDisplay) ScreenAddr(nome, ping int, ip [4]int, leitorOk int
 
 			flick.PORTAL, nome,
 			flick.IP, ip[3], ip[2], ip[1], ip[0],
-			flick.LEITOR, leitorOk,
 			flick.PING, ping,
+			flick.LEITOR, leitorOk,
 		),
 	)
 }

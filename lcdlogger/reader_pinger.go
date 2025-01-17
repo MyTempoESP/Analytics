@@ -1,44 +1,42 @@
 package lcdlogger
 
 import (
-	"github.com/tatsushid/go-fastping"
+	"github.com/prometheus-community/pro-bing"
 	"log"
-	"net"
 	"os"
+	"sync/atomic"
 	"time"
 )
 
-func NewSimplePinger(ip string) (p *fastping.Pinger, err error) {
+func NewSimplePinger(ip string) (p *probing.Pinger, err error) {
 
-	p = fastping.NewPinger()
-	ra, err := net.ResolveIPAddr("ip4:icmp", ip)
+	p, err = probing.NewPinger(ip)
 
-	if err != nil {
-
-		return
-	}
-
-	p.AddIPAddr(ra)
-
-	p.MaxRTT = time.Second * 2
-
-	err = p.Run()
+	p.SetPrivileged(true)
 
 	if err != nil {
 
 		return
 	}
+
+	//p.Size = *size
+	p.Interval = 2 * time.Second
+	p.Timeout = p.Interval * 2
+	//p.TTL = *ttl
+	//p.InterfaceName = *iface
+	//p.SetPrivileged(*privileged)
+	//p.SetTrafficClass(uint8(*tclass))
 
 	return
 }
 
 type ReaderPinger struct {
-	pinger *fastping.Pinger
+	pinger *probing.Pinger
 	ip     string
 
 	Octets [4]int
-	State  bool
-	Ping   int
+	State  atomic.Bool
+	Ping   int32
 }
 
 func NewReaderPinger() (r ReaderPinger, err error) {
@@ -53,14 +51,22 @@ func NewReaderPinger() (r ReaderPinger, err error) {
 		return
 	}
 
-	p.OnRecv = func(addr *net.IPAddr, rtt time.Duration) {
-		log.Printf("IP Addr: %s receive, RTT: %v\n", addr.String(), rtt)
+	p.OnSend = func(pkt *probing.Packet) {
 
-		r.State = true
-		r.Ping = int(rtt / time.Millisecond)
+		log.Printf("IP Addr: %s\n", pkt.IPAddr)
+
+		r.State.Store(false)
 	}
 
-	p.OnIdle = func() { r.State = false }
+	p.OnRecv = func(pkt *probing.Packet) {
+
+		log.Printf("IP Addr: %s receive, RTT: %v\n", pkt.IPAddr, pkt.Rtt)
+
+		r.State.Store(true)
+		atomic.StoreInt32(&r.Ping, int32(pkt.Rtt))
+	}
+
+	p.Run()
 
 	r.pinger = p
 
