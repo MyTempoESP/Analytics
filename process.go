@@ -251,7 +251,7 @@ func (a *Ay) Process() {
 
 				display.ScreenAddr(
 					NUM_EQUIP,
-					atomic.LoadInt32(&reader.Ping),
+					atomic.LoadInt64(&reader.Ping),
 					/* IP */ ip,
 					/* Leitor */ leitor,
 				)

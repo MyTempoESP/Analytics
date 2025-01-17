@@ -3,7 +3,7 @@ package lcdlogger
 import (
 	"github.com/prometheus-community/pro-bing"
 	"log"
-	"os"
+	//"os"
 	"sync/atomic"
 	"time"
 )
@@ -36,12 +36,13 @@ type ReaderPinger struct {
 
 	Octets [4]int
 	State  atomic.Bool
-	Ping   int32
+	Ping   int64
 }
 
 func NewReaderPinger() (r ReaderPinger, err error) {
 
-	r.ip = os.Getenv("READER_IP")
+	//r.ip = os.Getenv("READER_IP")
+	r.ip = "www.google.com"
 	r.Octets = IPIfy(r.ip)
 
 	p, err := NewSimplePinger(r.ip)
@@ -63,7 +64,7 @@ func NewReaderPinger() (r ReaderPinger, err error) {
 		log.Printf("IP Addr: %s receive, RTT: %v\n", pkt.IPAddr, pkt.Rtt)
 
 		r.State.Store(true)
-		atomic.StoreInt32(&r.Ping, int32(pkt.Rtt.Milliseconds()))
+		atomic.StoreInt64(&r.Ping, pkt.Rtt.Milliseconds())
 	}
 
 	p.Run()
