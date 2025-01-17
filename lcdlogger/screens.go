@@ -38,7 +38,7 @@ func (display *SerialDisplay) ScreenAddr(nome, commVerif int, ping int64, ip IPO
 		fmt.Sprintf(
 			"%d lbl %d num"+
 				" %d lbl %d %d %d %d ip"+
-				" %d lbl %d ms"+
+				" %d lbl %d val"+
 				" %d lbl %d val",
 
 			flick.PORTAL, nome,
