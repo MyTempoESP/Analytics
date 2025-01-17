@@ -1,11 +1,12 @@
 package lcdlogger
 
 import (
-	"github.com/prometheus-community/pro-bing"
 	"log"
-	//"os"
+	"os"
 	"sync/atomic"
 	"time"
+
+	"github.com/prometheus-community/pro-bing"
 )
 
 func NewSimplePinger(ip string) (p *probing.Pinger, err error) {
@@ -19,8 +20,9 @@ func NewSimplePinger(ip string) (p *probing.Pinger, err error) {
 		return
 	}
 
+	p.Count = 0xFFFE // basically all we need
 	//p.Size = *size
-	p.Interval = 2 * time.Second
+	p.Interval = 4 * time.Second
 	p.Timeout = p.Interval
 	//p.TTL = *ttl
 	//p.InterfaceName = *iface
@@ -41,8 +43,7 @@ type ReaderPinger struct {
 
 func NewReaderPinger() (r ReaderPinger, err error) {
 
-	//r.ip = os.Getenv("READER_IP")
-	r.ip = "www.google.com"
+	r.ip = os.Getenv("READER_IP")
 	r.Octets = IPIfy(r.ip)
 
 	p, err := NewSimplePinger(r.ip)
