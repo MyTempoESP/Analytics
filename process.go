@@ -237,12 +237,9 @@ func (a *Ay) Process() {
 		readerIP = reader.Octets
 
 		for {
-			<-time.After(reader.Pinger.Interval)
+			<-time.After(1 * time.Second)
 			readerState.Store(reader.State.Load())
 			readerPing.Store(reader.Ping.Load())
-
-			log.Println(reader.State.Load())
-			log.Println(reader.Ping.Load())
 		}
 	}()
 
