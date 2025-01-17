@@ -21,7 +21,7 @@ func NewSimplePinger(ip string) (p *probing.Pinger, err error) {
 
 	//p.Size = *size
 	p.Interval = 2 * time.Second
-	p.Timeout = p.Interval * 2
+	p.Timeout = p.Interval
 	//p.TTL = *ttl
 	//p.InterfaceName = *iface
 	//p.SetPrivileged(*privileged)
@@ -63,7 +63,7 @@ func NewReaderPinger() (r ReaderPinger, err error) {
 		log.Printf("IP Addr: %s receive, RTT: %v\n", pkt.IPAddr, pkt.Rtt)
 
 		r.State.Store(true)
-		atomic.StoreInt32(&r.Ping, int32(pkt.Rtt))
+		atomic.StoreInt32(&r.Ping, int32(pkt.Rtt.Milliseconds()))
 	}
 
 	p.Run()
