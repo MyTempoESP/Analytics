@@ -80,13 +80,13 @@ func (a *Ay) AtualizarTagsUnicas(tagsUnicas int64) {
 	}
 }
 
-func (a *Ay) AtualizarAntenas(antenas *[4]int64) {
+func (a *Ay) AtualizarAntenas(antenas *[4]atomic.Int64) {
 
 	_, err := a.db.Exec(QUERY_ATUALIZAR_ANTENAS,
-		atomic.LoadInt64(&antenas[0]),
-		atomic.LoadInt64(&antenas[1]),
-		atomic.LoadInt64(&antenas[2]),
-		atomic.LoadInt64(&antenas[3]),
+		antenas[0].Load(),
+		antenas[1].Load(),
+		antenas[2].Load(),
+		antenas[3].Load(),
 	)
 
 	if err != nil {
@@ -155,9 +155,8 @@ func (a *Ay) AtualizarTags(tags int64) (ok bool) {
 func (a *Ay) Process() {
 
 	var (
-		tags int64 /* shared */
-
-		antennas [4]int64 /* shared */
+		tags     atomic.Int64
+		antennas [4]atomic.Int64
 	)
 
 	tagSet := intSet.New()
@@ -174,9 +173,9 @@ func (a *Ay) Process() {
 				continue
 			}
 
-			atomic.AddInt64(&antennas[(t.Antena-1)%4], 1)
+			antennas[(t.Antena-1)%4].Add(1)
 
-			atomic.AddInt64(&tags, 1)
+			tags.Add(1)
 
 			if tagSet.Insert(t.Epc) {
 
@@ -198,14 +197,15 @@ func (a *Ay) Process() {
 			*/
 			log.Println("Atualizando tags")
 
-			if !a.AtualizarTags(atomic.LoadInt64(&tags)) {
+			if !a.AtualizarTags(tags.Load()) {
 
 				tagSet.Clear()
 
-				atomic.StoreInt64(&tags, 0)
+				tags.Store(0)
 
 				for i := range 4 {
-					atomic.StoreInt64(&antennas[i], 0)
+
+					antennas[i].Store(0)
 				}
 			}
 
@@ -213,14 +213,35 @@ func (a *Ay) Process() {
 		}
 	}()
 
+	var readerState atomic.Bool
+	var readerPing atomic.Int64
+	var readerIP [4]int
+
 	display, displayErr := lcdlogger.NewSerialDisplay()
-	reader, readerErr := lcdlogger.NewReaderPinger()
 
 	/* > Monitoring can be skipped if NewSerialDisplay() errors out, disabling the routine in Line 221 */
-	if displayErr != nil || readerErr != nil {
+	if displayErr != nil {
 
 		goto skip_monitoring
 	}
+
+	go func() {
+
+		reader, readerErr := lcdlogger.NewReaderPinger()
+
+		if readerErr != nil {
+
+			return
+		}
+
+		readerIP = reader.Octets
+
+		for {
+			<-time.After(reader.Pinger.Interval)
+			readerState.Store(reader.State.Load())
+			readerPing.Store(reader.Ping.Load())
+		}
+	}()
 
 	go func() {
 
@@ -235,15 +256,15 @@ func (a *Ay) Process() {
 				display.ScreenTags(
 					NUM_EQUIP,
 					comm_verif,
-					/* Tags */ atomic.LoadInt64(&tags),
+					/* Tags */ tags.Load(),
 					/* Atletas */ tagSet.Count(),
 				)
 			case lcdlogger.SCREEN_ADDR:
 
-				ip := reader.Octets
+				ip := readerIP
 				leitor := flick.OK
 
-				if !reader.State.Load() {
+				if !readerState.Load() {
 
 					ip = [4]int{0, 0, 0, 0}
 					leitor = flick.DESLIGAD
@@ -251,7 +272,7 @@ func (a *Ay) Process() {
 
 				display.ScreenAddr(
 					NUM_EQUIP,
-					atomic.LoadInt64(&reader.Ping),
+					readerPing.Load(),
 					/* IP */ ip,
 					/* Leitor */ leitor,
 				)
@@ -266,10 +287,10 @@ func (a *Ay) Process() {
 				display.ScreenStat(
 					NUM_EQUIP,
 					comm_verif,
-					lcdlogger.ToForthNumber(atomic.LoadInt64(&antennas[0])),
-					lcdlogger.ToForthNumber(atomic.LoadInt64(&antennas[1])),
-					lcdlogger.ToForthNumber(atomic.LoadInt64(&antennas[2])),
-					lcdlogger.ToForthNumber(atomic.LoadInt64(&antennas[3])),
+					lcdlogger.ToForthNumber(antennas[0].Load()),
+					lcdlogger.ToForthNumber(antennas[1].Load()),
+					lcdlogger.ToForthNumber(antennas[2].Load()),
+					lcdlogger.ToForthNumber(antennas[3].Load()),
 				)
 			}
 
